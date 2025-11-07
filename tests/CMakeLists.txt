@@ -41,5 +41,6 @@ add_custom_target(lint
 add_subdirectory(benches)
 
 # Main targets
+add_custom_target(build DEPENDS benches-build)
 add_custom_target(tests DEPENDS benches)
 
