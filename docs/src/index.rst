@@ -1,5 +1,5 @@
 ECAP5-DBLINKY
-============
+=============
 
 Blinky for ECAP5-BCARRIER-XLITE / ECAP5-BSOM bring-up
 

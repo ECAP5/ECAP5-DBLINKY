@@ -9,8 +9,14 @@ Architecture Overview
 Clock domains
 -------------
 
+N/A
+
 Functional partitioning
 -----------------------
 
+N/A
+
 Module interfaces
 -----------------
+
+N/A
