@@ -25,33 +25,35 @@ module ecap5_dblinky#(
 )(
   input  logic        clk_i,
 
-  output logic        som_leds[2],
-  output logic        carrier_leds[2]
+  output logic        som_leds_o[2],
+  output logic        carrier_leds_o[2]
 );
 
-logic[31:0] counter;
-logic is_done;
+logic[31:0] counter_d, counter_q = 0;
+logic led_toggle_q = 0;
 
-logic led_toggle;
-
-always_comb begin : done_detection
-  is_done = (counter >= INPUT_FREQ);
+always_comb begin
+  counter_d = counter_q + 1'b1;
 end
 
 always_ff @(posedge clk_i) begin
-  if(is_done) begin
-    counter <= 0;
-    led_toggle <= 0;
-    led_toggle <= !led_toggle;
+  // Once the counter has reached the input frequency
+  if(counter_d == INPUT_FREQ) begin
+    // Reset the counter
+    counter_q <= 0;
+    // Invert the led toggle
+    led_toggle_q <= !led_toggle_q;
   end else begin
-    counter <= counter + 1'b1; 
-    led_toggle <= led_toggle;
+    // Increment the counter
+    counter_q <= counter_d;
+
+    led_toggle_q <= led_toggle_q;
   end
 end
 
-assign som_leds[0] =  led_toggle;
-assign som_leds[1] = !led_toggle;
-assign carrier_leds[0] =  led_toggle; 
-assign carrier_leds[1] = !led_toggle; 
+assign som_leds_o[0] =  led_toggle_q;
+assign som_leds_o[1] = !led_toggle_q;
+assign carrier_leds_o[0] =  led_toggle_q; 
+assign carrier_leds_o[1] = !led_toggle_q; 
 
 endmodule // ecap5_dblinky

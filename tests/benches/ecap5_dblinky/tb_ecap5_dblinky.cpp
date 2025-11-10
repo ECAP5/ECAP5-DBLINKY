@@ -32,6 +32,8 @@
 #include "riscv.h"
 
 enum CondId {
+  COND_led = 0,
+  COND_inv_led,
   __CondIdEnd
 };
 
@@ -42,15 +44,63 @@ public:
   }
 };
 
-void tb_freq_divider(TB_Ecap5_dblinky * tb) {
+void tb_blinky(TB_Ecap5_dblinky * tb) {
   Vtb_ecap5_dblinky * core = tb->core;
+  tb->reset();
 
   //=================================
-  //      Tick (0-16)
+  //      Tick (0-7)
 
-  for(int i = 0; i < 24; i++) {
+  for(int i = 0; i < 7; i++) {
     tb->tick();
+
+    //`````````````````````````````````
+    //      Checks 
+     
+    tb->check(COND_led,     (core->som_leds_o[0]     == 0) && 
+                            (core->carrier_leds_o[0] == 0));
+    tb->check(COND_inv_led, (core->som_leds_o[1]     == 1) && 
+                            (core->carrier_leds_o[1] == 1));
   }
+
+  //=================================
+  //      Tick (8-15)
+
+  for(int i = 0; i < 8; i++) {
+    tb->tick();
+
+    //`````````````````````````````````
+    //      Checks 
+     
+    tb->check(COND_led,     (core->som_leds_o[0]     == 1) && 
+                            (core->carrier_leds_o[0] == 1));
+    tb->check(COND_inv_led, (core->som_leds_o[1]     == 0) && 
+                            (core->carrier_leds_o[1] == 0));
+  }
+
+  //=================================
+  //      Tick (9)
+
+  tb->tick();
+
+  //`````````````````````````````````
+  //      Checks 
+   
+  tb->check(COND_led,     (core->som_leds_o[0]     == 0) && 
+                          (core->carrier_leds_o[0] == 0));
+  tb->check(COND_inv_led, (core->som_leds_o[1]     == 1) && 
+                          (core->carrier_leds_o[1] == 1));
+
+  //`````````````````````````````````
+  //      Formal Checks 
+   
+  CHECK("tb_ecap5_dblinky.blinky.01",
+      tb->conditions[COND_led],
+      "Failed to implement the true leds", tb->err_cycles[COND_led]);
+
+  CHECK("tb_ecap5_dblinky.blinky.02",
+      tb->conditions[COND_inv_led],
+      "Failed to implement the inverted leds", tb->err_cycles[COND_inv_led]);
 }
 
 int main(int argc, char ** argv, char ** env) {
@@ -65,10 +115,11 @@ int main(int argc, char ** argv, char ** env) {
   tb->open_testdata("testdata/ecap5_dblinky.csv");
   tb->set_debug_log(verbose);
   tb->init_conditions(__CondIdEnd);
+  tb->debug_log = true;
 
   /************************************************************/
 
-  tb_freq_divider(tb);
+  tb_blinky(tb);
 
   /************************************************************/
 

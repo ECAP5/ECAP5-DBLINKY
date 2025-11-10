@@ -23,16 +23,16 @@
 module tb_ecap5_dblinky (
   input  logic        clk_i,
 
-  output logic        som_leds[2],
-  output logic        carrier_leds[2]
+  output logic        som_leds_o[2],
+  output logic        carrier_leds_o[2]
 );
 
 ecap5_dblinky #(
   .INPUT_FREQ(8) 
 ) dut (
   .clk_i            (clk_i),
-  .som_leds         (som_leds),
-  .carrier_leds     (carrier_leds)
+  .som_leds_o       (som_leds_o),
+  .carrier_leds_o   (carrier_leds_o)
 );
 
 endmodule // ecap5_dblinky
