@@ -1,0 +1,32 @@
+[*]
+[*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
+[*] Mon Nov 10 22:13:22 2025
+[*]
+[dumpfile] "/home/ubuntu/ecap5/design/blinky/build/tests/waves/ecap5_dblinky.vcd"
+[dumpfile_mtime] "Mon Nov 10 22:05:31 2025"
+[dumpfile_size] 1925
+[savefile] "/home/ubuntu/ecap5/design/blinky/config/gtkwave/config/ecap5_dblinky.gtkw"
+[timestart] 1
+[size] 1153 600
+[pos] 265 18
+*-5.689660 80 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[treeopen] TOP.tb_ecap5_dblinky.
+[sst_width] 276
+[signals_width] 182
+[sst_expanded] 1
+[sst_vpaned_height] 158
+@28
+TOP.tb_ecap5_dblinky.dut.clk_i
+@23
+[color] 3
+TOP.tb_ecap5_dblinky.dut.counter_q[31:0]
+@28
+[color] 7
+TOP.tb_ecap5_dblinky.dut.led_toggle_q
+[color] 2
+#{TOP.tb_ecap5_dblinky.dut.som_leds_o[0:1]} TOP.tb_ecap5_dblinky.dut.som_leds_o[0] TOP.tb_ecap5_dblinky.dut.som_leds_o[1]
+[color] 2
+#{TOP.tb_ecap5_dblinky.dut.carrier_leds_o[0:1]} TOP.tb_ecap5_dblinky.dut.carrier_leds_o[0] TOP.tb_ecap5_dblinky.dut.carrier_leds_o[1]
+[pattern_trace] 1
+[pattern_trace] 0
