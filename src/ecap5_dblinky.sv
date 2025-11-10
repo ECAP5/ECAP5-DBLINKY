@@ -20,16 +20,38 @@
  * along with ECAP5-DBLINKY.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-module ecap5_dblinky (
+module ecap5_dblinky#(
+  parameter integer INPUT_FREQ = 40000000 
+)(
   input  logic        clk_i,
 
   output logic        som_leds[2],
-  output logic        motherboard_leds[2]
+  output logic        carrier_leds[2]
 );
 
-assign som_leds[0] = 1'b0;
-assign som_leds[1] = 1'b0;
-assign motherboard_leds[0] = 1'b0;
-assign motherboard_leds[1] = 1'b0;
+logic[31:0] counter;
+logic is_done;
+
+logic led_toggle;
+
+always_comb begin : done_detection
+  is_done = (counter >= INPUT_FREQ);
+end
+
+always_ff @(posedge clk_i) begin
+  if(is_done) begin
+    counter <= 0;
+    led_toggle <= 0;
+    led_toggle <= !led_toggle;
+  end else begin
+    counter <= counter + 1'b1; 
+    led_toggle <= led_toggle;
+  end
+end
+
+assign som_leds[0] =  led_toggle;
+assign som_leds[1] = !led_toggle;
+assign carrier_leds[0] =  led_toggle; 
+assign carrier_leds[1] = !led_toggle; 
 
 endmodule // ecap5_dblinky
