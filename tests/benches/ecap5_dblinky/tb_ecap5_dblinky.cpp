@@ -42,6 +42,17 @@ public:
   }
 };
 
+void tb_freq_divider(TB_Ecap5_dblinky * tb) {
+  Vtb_ecap5_dblinky * core = tb->core;
+
+  //=================================
+  //      Tick (0-16)
+
+  for(int i = 0; i < 24; i++) {
+    tb->tick();
+  }
+}
+
 int main(int argc, char ** argv, char ** env) {
   srand(time(NULL));
   Verilated::traceEverOn(true);
@@ -56,6 +67,8 @@ int main(int argc, char ** argv, char ** env) {
   tb->init_conditions(__CondIdEnd);
 
   /************************************************************/
+
+  tb_freq_divider(tb);
 
   /************************************************************/
 
