@@ -1,0 +1,3 @@
+tb_ecap5_dblinky.blinky.01;U_BLINK_01
+tb_ecap5_dblinky.blinky.02;U_BLINK_02
+__UNTRACEABLE__;I_CLK_01;This requirement is covered by the hdl code.
