@@ -57,10 +57,10 @@ void tb_blinky(TB_Ecap5_dblinky * tb) {
     //`````````````````````````````````
     //      Checks 
      
-    tb->check(COND_led,     (core->som_leds_o[0]     == 0) && 
-                            (core->carrier_leds_o[0] == 0));
-    tb->check(COND_inv_led, (core->som_leds_o[1]     == 1) && 
-                            (core->carrier_leds_o[1] == 1));
+    tb->check(COND_led,     (core->som_led0_o     == 0) && 
+                            (core->carrier_led0_o == 0));
+    tb->check(COND_inv_led, (core->som_led1_o     == 1) && 
+                            (core->carrier_led1_o == 1));
   }
 
   //=================================
@@ -72,10 +72,10 @@ void tb_blinky(TB_Ecap5_dblinky * tb) {
     //`````````````````````````````````
     //      Checks 
      
-    tb->check(COND_led,     (core->som_leds_o[0]     == 1) && 
-                            (core->carrier_leds_o[0] == 1));
-    tb->check(COND_inv_led, (core->som_leds_o[1]     == 0) && 
-                            (core->carrier_leds_o[1] == 0));
+    tb->check(COND_led,     (core->som_led0_o     == 1) && 
+                            (core->carrier_led0_o == 1));
+    tb->check(COND_inv_led, (core->som_led1_o     == 0) && 
+                            (core->carrier_led1_o == 0));
   }
 
   //=================================
@@ -86,10 +86,10 @@ void tb_blinky(TB_Ecap5_dblinky * tb) {
   //`````````````````````````````````
   //      Checks 
    
-  tb->check(COND_led,     (core->som_leds_o[0]     == 0) && 
-                          (core->carrier_leds_o[0] == 0));
-  tb->check(COND_inv_led, (core->som_leds_o[1]     == 1) && 
-                          (core->carrier_leds_o[1] == 1));
+  tb->check(COND_led,     (core->som_led0_o     == 0) && 
+                          (core->carrier_led0_o == 0));
+  tb->check(COND_inv_led, (core->som_led1_o     == 1) && 
+                          (core->carrier_led1_o == 1));
 
   //`````````````````````````````````
   //      Formal Checks 
