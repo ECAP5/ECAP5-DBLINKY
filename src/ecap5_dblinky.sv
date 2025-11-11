@@ -21,12 +21,14 @@
  */
 
 module ecap5_dblinky#(
-  parameter integer INPUT_FREQ = 40000000 
+  parameter integer INPUT_FREQ = 12000000 
 )(
   input  logic        clk_i,
 
-  output logic        som_leds_o[2],
-  output logic        carrier_leds_o[2]
+  output logic   som_led0_o,
+  output logic   som_led1_o,
+  output logic   carrier_led0_o,
+  output logic   carrier_led1_o
 );
 
 logic[31:0] counter_d, counter_q = 0;
@@ -51,9 +53,9 @@ always_ff @(posedge clk_i) begin
   end
 end
 
-assign som_leds_o[0] =  led_toggle_q;
-assign som_leds_o[1] = !led_toggle_q;
-assign carrier_leds_o[0] =  led_toggle_q; 
-assign carrier_leds_o[1] = !led_toggle_q; 
+assign som_led0_o =  led_toggle_q;
+assign som_led1_o = !led_toggle_q;
+assign carrier_led0_o =  led_toggle_q; 
+assign carrier_led1_o = !led_toggle_q; 
 
 endmodule // ecap5_dblinky
