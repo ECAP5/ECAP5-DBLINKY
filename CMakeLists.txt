@@ -71,3 +71,27 @@ list(APPEND CMAKE_MODULE_PATH "${sphinx_cmake_SOURCE_DIR}/cmake")
 
 add_subdirectory(docs)
 add_subdirectory(tests)
+
+# Synthesis
+
+add_custom_command(
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/synth.json
+  DEPENDS ${CMAKE_CURRENT_LIST_DIR}/src/*
+  COMMAND yosys -p \'read -sv ${CMAKE_CURRENT_LIST_DIR}/src/* \; synth_ecp5 -top ecap5_dblinky -json ${CMAKE_CURRENT_BINARY_DIR}/synth.json\')
+
+# Place and Route
+
+add_custom_command(
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/placement.config
+  DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/synth.json
+  COMMAND nextpnr-ecp5 --85k --package CABGA756 --json ${CMAKE_CURRENT_BINARY_DIR}/synth.json --lpf ${CMAKE_CURRENT_LIST_DIR}/config/pinout.lpf --textcfg ${CMAKE_CURRENT_BINARY_DIR}/placement.config)
+
+# Bitstream generation
+
+add_custom_command(
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/bitstream.bit
+  DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/placement.config
+  COMMAND ecppack --compress --bit ${CMAKE_CURRENT_BINARY_DIR}/bitstream.bit ${CMAKE_CURRENT_BINARY_DIR}/placement.config)
+
+
+add_custom_target(gen DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/bitstream.bit)
