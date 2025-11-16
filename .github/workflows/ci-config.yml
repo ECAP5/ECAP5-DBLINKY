@@ -1,4 +1,4 @@
-name: Simulated testing using verilator
+name: ECAP5-DBLINKY continuous integration
 
 on:
   push:
@@ -14,7 +14,7 @@ env:
   BUILD_TYPE: Release
   REPORT_ARTIFACT_NAME: ecap5-dblinky-report-${{github.run_number}}-${{github.run_attempt}}
   DOCUMENTATION_ARTIFACT_NAME: ecap5-dblinky-docs-${{github.run_number}}-${{github.run_attempt}}
-  BUILD_CACHE_KEY: build-directory-${{ github.run_id }}-${{ github.run_attempt }}
+  BUILD_CACHE_KEY: simulation-build-directory-${{ github.run_id }}-${{ github.run_attempt }}
 
 jobs:
   prepare:
@@ -113,9 +113,43 @@ jobs:
         path: ${{ env.cache-folder-path }}
         key: ${{ runner.os }}-${{env.BUILD_CACHE_KEY}}
 
-  report:
+  bitstream:
     runs-on: self-hosted
     needs: simulate
+
+    steps:
+    - uses: actions/checkout@v4.1.1
+
+    - name: Import build directory
+      id: import-build
+      uses: actions/cache/restore@v4.3.0
+      env:
+        cache-folder-path: ${{github.workspace}}/build
+      with:
+        path: ${{ env.cache-folder-path }}
+        key: ${{ runner.os }}-${{env.BUILD_CACHE_KEY}}
+
+    - name: Generate bitstream
+      run: ninja -C ${{github.workspace}}/build gen
+
+    - name: Delete Previous Cache
+      if: ${{ always() && steps.import-build.outputs.cache-hit == 'true'}}
+      run: gh cache delete "${{ runner.os }}-${{env.BUILD_CACHE_KEY}}"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Cache build directory
+      if: always()
+      uses: actions/cache/save@v4.3.0
+      env:
+        cache-folder-path: ${{github.workspace}}/build
+      with:
+        path: ${{ env.cache-folder-path }}
+        key: ${{ runner.os }}-${{env.BUILD_CACHE_KEY}}
+
+  report:
+    runs-on: self-hosted
+    needs: bitstream
     if: always()
 
     steps:
