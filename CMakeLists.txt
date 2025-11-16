@@ -61,37 +61,40 @@ add_dependency(verilator-cmake
   GIT ecap5/verilator-cmake
   TAG tags/v1.0.1)
 
+add_dependency(oss-cad-suite-cmake
+  GIT ecap5/oss-cad-suite-cmake
+  TAG tags/v1.0.0)
+
 # Configure dependencies
 
 include(${verilator_cmake_SOURCE_DIR}/cmake/verilator-config.cmake)
 include(${ecap5_treq_SOURCE_DIR}/config.cmake)
 list(APPEND CMAKE_MODULE_PATH "${sphinx_cmake_SOURCE_DIR}/cmake")
+include(${oss_cad_suite_cmake_SOURCE_DIR}/cmake/oss-cad-suite-config.cmake)
 
 # Include subdirectories
 
 add_subdirectory(docs)
 add_subdirectory(tests)
 
-# Synthesis
-
-add_custom_command(
-  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/synth.json
-  DEPENDS ${CMAKE_CURRENT_LIST_DIR}/src/*
-  COMMAND yosys -p \'read -sv ${CMAKE_CURRENT_LIST_DIR}/src/* \; synth_ecp5 -top ecap5_dblinky -json ${CMAKE_CURRENT_BINARY_DIR}/synth.json\')
-
-# Place and Route
-
-add_custom_command(
-  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/placement.config
-  DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/synth.json
-  COMMAND nextpnr-ecp5 --85k --package CABGA756 --json ${CMAKE_CURRENT_BINARY_DIR}/synth.json --lpf ${CMAKE_CURRENT_LIST_DIR}/config/pinout.lpf --textcfg ${CMAKE_CURRENT_BINARY_DIR}/placement.config)
-
 # Bitstream generation
 
-add_custom_command(
-  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/bitstream.bit
-  DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/placement.config
-  COMMAND ecppack --compress --bit ${CMAKE_CURRENT_BINARY_DIR}/bitstream.bit ${CMAKE_CURRENT_BINARY_DIR}/placement.config)
+add_synthesis_target(
+  SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/*
+  TOP_MODULE ecap5_dblinky
+  TARGET_FPGA ecp5
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/synth.json)
 
+add_place_and_route_target(
+  INPUT ${CMAKE_CURRENT_BINARY_DIR}/synth.json
+  TARGET_FPGA ecp5
+  PACKAGE_OPTIONS --85k --package CABGA756
+  PINOUT_OPTIONS --lpf ${CMAKE_CURRENT_LIST_DIR}/config/pinout.lpf
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/placement.config)
+
+add_ecp5_bitstream_target(
+  INPUT ${CMAKE_CURRENT_BINARY_DIR}/placement.config
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/bitstream.bit
+  COMPRESS)
 
 add_custom_target(gen DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/bitstream.bit)
