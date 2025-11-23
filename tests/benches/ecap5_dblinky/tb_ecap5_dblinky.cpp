@@ -49,9 +49,9 @@ void tb_blinky(TB_Ecap5_dblinky * tb) {
   tb->reset();
 
   //=================================
-  //      Tick (0-7)
+  //      Tick (0-999)
 
-  for(int i = 0; i < 7; i++) {
+  for(int i = 0; i < (1000-1); i++) {
     tb->tick();
 
     //`````````````````````````````````
@@ -64,9 +64,9 @@ void tb_blinky(TB_Ecap5_dblinky * tb) {
   }
 
   //=================================
-  //      Tick (8-15)
+  //      Tick (1000-1998)
 
-  for(int i = 0; i < 8; i++) {
+  for(int i = 0; i < 1000; i++) {
     tb->tick();
 
     //`````````````````````````````````
@@ -79,7 +79,7 @@ void tb_blinky(TB_Ecap5_dblinky * tb) {
   }
 
   //=================================
-  //      Tick (9)
+  //      Tick (1999)
 
   tb->tick();
 
@@ -116,6 +116,10 @@ int main(int argc, char ** argv, char ** env) {
   tb->set_debug_log(verbose);
   tb->init_conditions(__CondIdEnd);
   tb->debug_log = true;
+
+  // Set the clock period
+  // 1000 Hz = 1e-3s period = 1 000 000 000ps period
+  tb->clk_period_in_ps = 1000000000;
 
   /************************************************************/
 

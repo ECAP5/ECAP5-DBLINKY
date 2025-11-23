@@ -30,7 +30,7 @@ module tb_ecap5_dblinky (
 );
 
 ecap5_dblinky #(
-  .INPUT_FREQ(8) 
+  .INPUT_FREQ(1000) 
 ) dut (
   .clk_i            (clk_i),
   .som_led0_o       (som_led0_o),
